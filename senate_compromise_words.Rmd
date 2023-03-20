@@ -38,6 +38,14 @@ respect_for_marriage <- read.csv2("data/respect_for_marriage.csv", sep=",")
 safer_communities <- read.csv2("data/safer_communities.csv", sep=",")
 ```
 
+Group data
+```{r}
+bipartisan_collection <- rbind(respect_for_marriage, safer_communities, infrastructure_investment)
+partisan_collection <- rbind(inflation_reduction, american_rescue)
+all_tweets <- rbind(bipartisan_collection, partisan_collection)
+```
+
+
 lemma data
 ```{r}
 lemmaData <- read.csv2("data/baseform_en.tsv", # downloaded from https://github.com/tm4ss/tm4ss.github.io/tree/master/resources
@@ -47,7 +55,7 @@ lemmaData <- read.csv2("data/baseform_en.tsv", # downloaded from https://github.
                        stringsAsFactors = F)
 ```
 
-corpus
+corpus function
 ```{r}
 
 tweets_to_corpus<-function(tweets, num_of_ngrams) {
@@ -73,14 +81,61 @@ tweets_to_corpus<-function(tweets, num_of_ngrams) {
  
   tweets_corpus_proc # return the processed corpus
 }
-
-american_rescue_corpus_a <- tweets_to_corpus(american_rescue, 1)
-
 ```
+
+create corpus
+```{r}
+american_rescue_corpus_a <- tweets_to_corpus(american_rescue, 1)
+american_rescue_corpus_b <- tweets_to_corpus(american_rescue, 2)
+
+inflation_reduction_corpus_a <- tweets_to_corpus(inflation_reduction, 1)
+inflation_reduction_corpus_b <- tweets_to_corpus(inflation_reduction, 2)
+
+infrastructure_investment_corpus_a <- tweets_to_corpus(infrastructure_investment, 1)
+infrastructure_investment_corpus_b <- tweets_to_corpus(infrastructure_investment, 2)
+
+respect_for_marriage_corpus_a <- tweets_to_corpus(respect_for_marriage, 1)
+respect_for_marriage_corpus_b <- tweets_to_corpus(respect_for_marriage, 2)
+
+safer_communities_corpus_a <- tweets_to_corpus(safer_communities, 1)
+safer_communities_corpus_b <- tweets_to_corpus(safer_communities, 2)
+
+bipartisan_collection_corpus_a <- tweets_to_corpus(bipartisan_collection, 1)
+bipartisan_collection_corpus_b <- tweets_to_corpus(bipartisan_collection, 2)
+
+partisan_collection_corpus_a <- tweets_to_corpus(partisan_collection, 1)
+partisan_collection_corpus_b <- tweets_to_corpus(partisan_collection, 2)
+
+all_tweets_corpus_a <- tweets_to_corpus(all_tweets, 1)
+all_tweets_corpus_b <- tweets_to_corpus(all_tweets, 2)
+```
+
 
 dtms
 ```{r}
-dtm_american_rescue<-dfm(corpus_american_rescue_proc)
+dtm_american_rescue_a<-dfm(american_rescue_corpus_a)
+dtm_american_rescue_b<-dfm(american_rescue_corpus_b)
+
+dtm_inflation_reduction_a<-dfm(inflation_reduction_corpus_a)
+dtm_inflation_reduction_b<-dfm(inflation_reduction_corpus_b)
+
+dtm_infrastructure_investment_a<-dfm(infrastructure_investment_corpus_a)
+dtm_infrastructure_investment_b<-dfm(infrastructure_investment_corpus_b)
+
+dtm_respect_for_marriage_a<-dfm(respect_for_marriage_corpus_a)
+dtm_respect_for_marriage_b<-dfm(respect_for_marriage_corpus_b)
+
+dtm_safer_communities_a<-dfm(safer_communities_corpus_a)
+dtm_safer_communities_b<-dfm(safer_communities_corpus_b)
+
+dtm_bipartisan_collection_a<-dfm(bipartisan_collection_corpus_a)
+dtm_bipartisan_collection_b<-dfm(bipartisan_collection_corpus_b)
+
+dtm_partisan_collection_a<-dfm(partisan_collection_corpus_a)
+dtm_partisan_collection_b<-dfm(partisan_collection_corpus_b)
+
+dtm_all_tweets_a<-dfm(all_tweets_corpus_a)
+dtm_all_tweets_b<-dfm(all_tweets_corpus_b)
 ```
 
 
@@ -95,18 +150,55 @@ To access a list of the most frequently occurring features, we can use `topfeatu
 
 from https://quanteda.io/articles/quickstart.html
 
-Could also try ngrams with single words or word groups
 
 ## Top words overall
+```{r}
+topfeatures(dtm_all_tweets_a, 20)
+```
+
 
 ## Top words in each act collection
 
 ```{r}
-topfeatures(dtm_american_rescue, 20)
+topfeatures(dtm_american_rescue_a, 20)
+```
+```{r}
+topfeatures(dtm_inflation_reduction_a, 20)
+```
+
+```{r}
+topfeatures(dtm_infrastructure_investment_a, 20)
+```
+
+```{r}
+topfeatures(dtm_respect_for_marriage_a, 20)
+```
+
+```{r}
+topfeatures(dtm_safer_communities_a, 20)
 ```
 
 
 ## Top words in compromise Tweets versus not compromise Tweets
+
+```{r}
+topfeatures(dtm_bipartisan_collection_a, 20)
+```
+
+```{r}
+topfeatures(dtm_partisan_collection_a, 20)
+```
+
+## Top word pairings in compromise Tweets versus not compromise Tweets
+
+```{r}
+topfeatures(dtm_bipartisan_collection_b, 20)
+```
+
+```{r}
+topfeatures(dtm_partisan_collection_b, 20)
+```
+
 
 ## Top words in compromise bill Tweets that are only in compromise bill Tweets
 Not sure how useful this will be. Try it and see. But may more be looking for words
