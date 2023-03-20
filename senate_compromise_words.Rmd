@@ -1,0 +1,159 @@
+---
+title: "senate_compromise_words"
+author: "hoskisson"
+date: "2023-02-18"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+libraries
+```{r}
+library(quanteda) # https://quanteda.io/
+```
+
+
+
+
+*Compromise*
+Respect for Marriage Act of 2022
+Bipartisan Safer Communities Act of 2022
+Infrastructure Investment and Jobs Act of 2021
+
+*Non Compromise*
+Inflation Reduction Act of 2022
+American Rescue Plan of 2021
+
+
+# Data prep
+
+Read Data
+```{r}
+american_rescue <- read.csv2("data/american_rescue_2021.csv", sep=",")
+inflation_reduction <- read.csv2("data/inflation_reduction.csv", sep=",")
+infrastructure_investment <- read.csv2("data/infrastructure_investment.csv", sep=",")
+respect_for_marriage <- read.csv2("data/respect_for_marriage.csv", sep=",")
+safer_communities <- read.csv2("data/safer_communities.csv", sep=",")
+```
+
+lemma data
+```{r}
+lemmaData <- read.csv2("data/baseform_en.tsv", # downloaded from https://github.com/tm4ss/tm4ss.github.io/tree/master/resources
+                       sep=",", 
+                       header=FALSE, 
+                       encoding = "UTF-8", 
+                       stringsAsFactors = F)
+```
+
+corpus
+```{r}
+
+tweets_to_corpus<-function(tweets, num_of_ngrams) {
+  tweets_corpus <- corpus(tweets,
+                          docid_field = "id",
+                          text_field="full_text")
+  
+  tweets_corpus_proc <- tokens(tweets_corpus,
+                                remove_punct = TRUE, # remove punctuation
+                                remove_numbers= TRUE, # remove numbers
+                                remove_symbols= TRUE) %>% # remove symbols
+                                  tokens_tolower() # remove capitalization
+  tweets_corpus_proc <- tokens_replace(
+                          tweets_corpus_proc, # "Substitute token types based on vectorized one-to-one matching"
+                          lemmaData$V1,
+                          lemmaData$V2,
+                          valuetype = "fixed"
+                        )
+  
+  tweets_corpus_proc <- tweets_corpus_proc %>%
+                          tokens_remove(stopwords("english")) %>%
+                          tokens_ngrams(num_of_ngrams)
+ 
+  tweets_corpus_proc # return the processed corpus
+}
+
+american_rescue_corpus_a <- tweets_to_corpus(american_rescue, 1)
+
+```
+
+dtms
+```{r}
+dtm_american_rescue<-dfm(corpus_american_rescue_proc)
+```
+
+
+
+# Highest frequency words
+
+Notes
+
+To access a list of the most frequently occurring features, we can use `topfeatures():`
+
+`topfeatures(dfmat_uk, 20)  # 20 most frequent words`
+
+from https://quanteda.io/articles/quickstart.html
+
+Could also try ngrams with single words or word groups
+
+## Top words overall
+
+## Top words in each act collection
+
+```{r}
+topfeatures(dtm_american_rescue, 20)
+```
+
+
+## Top words in compromise Tweets versus not compromise Tweets
+
+## Top words in compromise bill Tweets that are only in compromise bill Tweets
+Not sure how useful this will be. Try it and see. But may more be looking for words
+that are rare in one and more common in another rather than frequent versus
+completely absent. Maybe I get enough information about frequent words by
+comparing top 20 words in compromise vs non compromise tweets
+
+## Top words in non-compromise bills Tweets that are only in non-compromise bills Tweets
+
+## Likelihood of certain words being in compromise bill Tweets
+
+This should be useful:https://quanteda.io/articles/quickstart.html#grouping-words-by-dictionary-or-equivalence-class
+
+Each Tweet will be viewed as a document. But I can add columns to each dataset
+(before making the corpus). One column for `compromise` and one for `act` to 
+distinguish whether this Tweet belongs to a compromise bill and what the name of
+the bill is for each Tweet.
+
+When do this, could combine all datasets into one to make one big corpus tagged
+with the data I need for analysis.
+
+## Visual ideas
+
+### Word clouds
+
+See https://quanteda.io/articles/quickstart.html
+
+### Figure showing top word for each day
+
+
+# Sentiment
+
+## Sentiment scores of all Tweets
+
+## Sentiment scores of each collection
+
+## Sentiment scores of compromise collection
+
+## Sentiment scores of non-compromise collection
+
+## Likelihood of positive sentiment being in the compromise bill collection
+
+## Visual ideas
+
+### Barchart with percent positive Tweets in each collection
+
+### Barchart with percent positive Tweets for compromise collections vs non compromise
+
+### Top emotions conveyed barchart
+
