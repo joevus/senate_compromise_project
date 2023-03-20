@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 libraries
 ```{r}
 library(quanteda) # https://quanteda.io/
+library("quanteda.textplots")
 ```
 
 
@@ -225,6 +226,23 @@ with the data I need for analysis.
 ### Word clouds
 
 See https://quanteda.io/articles/quickstart.html
+
+```{r}
+textplot_wordcloud(
+  dtm_bipartisan_collection_a,
+  max_words = 100,
+  rotation = 0.25,
+  color = rev(RColorBrewer::brewer.pal(10, "RdBu"))
+)
+```
+
+```{r}
+textplot_wordcloud(
+  dtm_partisan_collection_a, max_words=100,
+  rotation = 0.25,
+  color = rev(RColorBrewer::brewer.pal(10, "RdBu"))
+)
+```
 
 ### Figure showing top word for each day
 
