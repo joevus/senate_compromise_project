@@ -118,6 +118,7 @@ tweets_to_corpus<-function(tweets, num_of_ngrams) {
 Create corpus. These have 1 or 2 as the second parameter indicating ngrams.
 A corpus with the `a` suffix indicates ngram of 1. Suffix of `b` indicates 
 ngram of 2.
+Also, what I call a corpus here is actually a set of tokens.
 ```{r}
 american_rescue_corpus_a <- tweets_to_corpus(american_rescue, 1)
 american_rescue_corpus_b <- tweets_to_corpus(american_rescue, 2)
@@ -266,7 +267,7 @@ textstat_frequency(dfm_target_words)
 ```
 
 ```{r}
-dfm_target_words <- partisan_collection_corpus_a %>%
+dfm_target_words_partisan <- partisan_collection_corpus_a %>%
   tokens_select(c(
     "bipartisan",
     "compromise",
@@ -279,9 +280,9 @@ dfm_target_words <- partisan_collection_corpus_a %>%
   )) %>%
   dfm()
 
-dfm_target_words
+dfm_target_words_partisan
 
-textstat_frequency(dfm_target_words)
+textstat_frequency(dfm_target_words_partisan)
 ```
 
 ## Likelihood of certain words being in compromise bill Tweets
@@ -295,6 +296,60 @@ the bill is for each Tweet.
 
 When do this, could combine all datasets into one to make one big corpus tagged
 with the data I need for analysis.
+
+Data prep
+```{r}
+## narrow dfm to several target features
+dfm_target_words_all <- all_tweets_corpus_a %>%
+  tokens_select(c(
+    "bipartisan",
+    "compromise",
+    "unity",
+    "unite",
+    "family",
+    "solidarity",
+    "coalition",
+    "aisle"
+  )) %>%
+  dfm()
+
+## convert to data frame
+target_words_all <- convert(dfm_target_words_all, "data.frame")
+
+## add columns to Tweet collection based on dfm data
+all_tweets$word_count_bipartisan = NA
+all_tweets$word_present_bipartisan = NA
+
+for(i in 1:nrow(all_tweets)) {
+  tweet_id <- all_tweets[i, "id"]
+  bipartisan_count <- target_words_all[target_words_all$doc_id == tweet_id,]$bipartisan
+  all_tweets[i, "word_count_bipartisan"] <- bipartisan_count
+  
+  word_present_bipartisan = 0
+  if(bipartisan_count > 0) {
+    word_present_bipartisan = 1
+  }
+  all_tweets[i, "word_present_bipartisan"] <- word_present_bipartisan
+}
+
+## 
+
+```
+Now we have two new columns in the all_tweets dataset.
+
+The column word_count_bipartisan contains a count of the number of times the word "bipartisan" appears in the
+Tweet.
+
+The column word_present_bipartisan is coded as a 1 if the word bipartisan is present at least once
+in the Tweet and 0 if it is not.
+
+```{r}
+logit_bipartisan <- glm(bipartisan_bill ~ word_present_bipartisan, data=all_tweets, family="binomial")
+summary(logit_bipartisan)
+## odds ratios and 95% CI
+exp(cbind(OR = coef(logit_bipartisan), confint(logit_bipartisan))) # see https://stats.oarc.ucla.edu/r/dae/logit-regression/
+```
+
 
 ## Visual ideas
 
