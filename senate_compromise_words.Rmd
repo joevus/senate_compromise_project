@@ -13,6 +13,7 @@ libraries
 ```{r}
 library(quanteda) # https://quanteda.io/
 library("quanteda.textplots")
+library("quanteda.textstats")
 ```
 
 
@@ -38,6 +39,36 @@ infrastructure_investment <- read.csv2("data/infrastructure_investment.csv", sep
 respect_for_marriage <- read.csv2("data/respect_for_marriage.csv", sep=",")
 safer_communities <- read.csv2("data/safer_communities.csv", sep=",")
 ```
+
+## Enhance data
+
+Add one column to each Tweet collection for whether the collection was connected
+to a bipartisan bill or not. Uses the variable name `bipartisan_bill`. Coded
+`1` for a bipartisan bill and `0` for a partisan bill.
+```{r}
+american_rescue$bipartisan_bill = 0
+inflation_reduction$bipartisan_bill = 0
+
+infrastructure_investment$bipartisan_bill = 1
+respect_for_marriage$bipartisan_bill = 1
+safer_communities$bipartisan_bill = 1
+```
+
+Add column for number of bipartisan votes for the bill associated with the Tweet collection.
+One vote for each Senator from the minority party who voted for the bill. In each
+collection these are Republican Senators.
+For those collections coded as `0` this indicates the Tweet belongs to a partisan bill collection
+of Tweets (again meaning Tweets in the 2-week period leading up to a passing vote on a bill).
+```{r}
+american_rescue$bipartisan_votes = 0
+inflation_reduction$bipartisan_votes = 0
+
+infrastructure_investment$bipartisan_votes = 19
+respect_for_marriage$bipartisan_votes = 12
+safer_communities$bipartisan_votes = 15
+```
+
+
 
 Group data
 ```{r}
@@ -84,7 +115,9 @@ tweets_to_corpus<-function(tweets, num_of_ngrams) {
 }
 ```
 
-create corpus
+Create corpus. These have 1 or 2 as the second parameter indicating ngrams.
+A corpus with the `a` suffix indicates ngram of 1. Suffix of `b` indicates 
+ngram of 2.
 ```{r}
 american_rescue_corpus_a <- tweets_to_corpus(american_rescue, 1)
 american_rescue_corpus_b <- tweets_to_corpus(american_rescue, 2)
@@ -208,6 +241,48 @@ completely absent. Maybe I get enough information about frequent words by
 comparing top 20 words in compromise vs non compromise tweets
 
 ## Top words in non-compromise bills Tweets that are only in non-compromise bills Tweets
+
+## Frequency of certain words in compromise versus non-compromise bill Tweets
+
+https://stackoverflow.com/questions/65140308/in-r-how-can-i-count-specific-words-in-a-corpus
+
+```{r}
+dfm_target_words <- bipartisan_collection_corpus_a %>%
+  tokens_select(c(
+    "bipartisan",
+    "compromise",
+    "unity",
+    "unite",
+    "family",
+    "solidarity",
+    "coalition",
+    "aisle"
+  )) %>%
+  dfm()
+
+dfm_target_words
+
+textstat_frequency(dfm_target_words)
+```
+
+```{r}
+dfm_target_words <- partisan_collection_corpus_a %>%
+  tokens_select(c(
+    "bipartisan",
+    "compromise",
+    "unity",
+    "unite",
+    "family",
+    "solidarity",
+    "coalition",
+    "aisle"
+  )) %>%
+  dfm()
+
+dfm_target_words
+
+textstat_frequency(dfm_target_words)
+```
 
 ## Likelihood of certain words being in compromise bill Tweets
 
