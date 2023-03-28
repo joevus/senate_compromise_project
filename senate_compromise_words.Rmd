@@ -109,6 +109,7 @@ tweets_to_corpus<-function(tweets, num_of_ngrams) {
   
   tweets_corpus_proc <- tweets_corpus_proc %>%
                           tokens_remove(stopwords("english")) %>%
+                          tokens_remove(c("amp", "rt")) %>%
                           tokens_ngrams(num_of_ngrams)
  
   tweets_corpus_proc # return the processed corpus
@@ -197,6 +198,7 @@ topfeatures(dtm_all_tweets_a, 20)
 ```{r}
 topfeatures(dtm_american_rescue_a, 20)
 ```
+
 ```{r}
 topfeatures(dtm_inflation_reduction_a, 20)
 ```
@@ -223,6 +225,10 @@ topfeatures(dtm_bipartisan_collection_a, 20)
 ```{r}
 topfeatures(dtm_partisan_collection_a, 20)
 ```
+
+The word "act" is ranked 2 in the partisan collection and 10 in the bipartisan collection.
+
+Could be interesting to compare the frequencies. "american" has a higher percentage advantage over the 2nd most used word in the partisan collection than in the bipartisan.
 
 ## Top word pairings in compromise Tweets versus not compromise Tweets
 
