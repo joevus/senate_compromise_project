@@ -81,6 +81,10 @@ senator_data_c <- full_join(senator_data_a, senator_data_b) %>%
   arrange(id)
 ```
 
+record senator_data_c
+```{r}
+write.csv(senator_data_c,"data/senator_data_c.csv")
+```
 
 
 
