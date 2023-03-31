@@ -1,0 +1,133 @@
+---
+title: "covariates"
+author: "hoskisson"
+date: "2023-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rtweet)
+library(tidyverse)
+```
+
+## Compile a table with list of Senators in the 117th congress
+Sources:
+https://www.congress.gov/members?q=%7B%22congress%22%3A117%2C%22chamber%22%3A%22Senate%22%7D
+https://github.com/unitedstates/congress-legislators
+```{r}
+legislators_current <- read.csv("data/legislators-current.csv") %>%
+  filter(type == "sen")
+legislators_current$last_name <- tolower(legislators_current$last_name)
+legislators_current$first_name <- tolower(legislators_current$first_name)
+
+
+legislators_historical <- read.csv("data/legislators-historical.csv") %>%
+  filter(type == "sen")
+
+legislators_historical$last_name <- tolower(legislators_historical$last_name)
+legislators_historical$first_name <- tolower(legislators_historical$first_name)
+# data I compiled by hand of the 117th congress
+# omitted Kamala Harris and Kelly Loeffler because they were not in chamber
+# at time of votes on bills I'm interested in
+senator_data <- read.csv("data/senator_data.csv")
+```
+
+Join current legislators data
+```{r}
+# join with current legislators list
+senator_data_a <- senator_data %>%
+  left_join(legislators_current, by = c("last_name", "first_name")) %>%
+  select(c(id:first_name, middle_name, full_name, birthday, gender.y, state.y, type, party.y, govtrack_id, ballotpedia_id))
+
+# clean joined data
+senator_data_a <- senator_data_a %>%
+  mutate(
+    party = party.y,
+    gender = gender.y,
+    state = state.y
+  ) %>%
+  select(-party.y, -gender.y, -state.y) %>%
+  filter(!is.na(party)) # only keep the ones we have data for--use party column to indicate this
+```
+
+Join historical legislator data
+```{r}
+senator_data_b <- senator_data %>%
+  left_join(legislators_historical, by = c("last_name", "first_name")) %>%
+  select(c(id:first_name, middle_name, full_name, birthday, gender.y, state.y, type, party.y, govtrack_id, ballotpedia_id))
+
+# clean joined data
+senator_data_b <- senator_data_b %>%
+  mutate(
+    party = party.y,
+    gender = gender.y,
+    state = state.y
+  ) %>%
+  select(-party.y, -gender.y, -state.y) %>%
+  filter(!is.na(party)) # only keep the ones we have data for--use party column to indicate this
+
+# remove JFK because it is a false match
+senator_data_b <- senator_data_b %>%
+  filter(last_name != "kennedy")
+```
+
+Join current and historical together
+```{r}
+senator_data_c <- full_join(senator_data_a, senator_data_b) %>%
+  arrange(id)
+```
+
+
+
+
+```{r}
+members <- lists_members(list_id = 63915645 )
+senator_handles_list <- members$screen_name
+senator_handles_df<-as.data.frame(senator_handles_list)
+write.csv(senator_handles_df$senator_handles_list, "data/senator_handles.csv")
+```
+
+
+
+```{r}
+rstats <- search_tweets("#rstats", n = 2, include_rts = FALSE)
+colnames(rstats)
+rstats[1:5, c("created_at", "text", "id_str")]
+```
+
+```{r}
+lookup_tweets(statuses = c("1500932588436860000"))
+lookup_users(c("1499557773687800000"))
+get_retweets("1499557773687800000")
+tweet_get("1500932588436860000")
+```
+
+```{r}
+user_info <- lookup_users(tweet_id = "123456789", token = token)
+```
+
+
+```{r}
+american_rescue_2021 <- get_timeline(
+  user=senator_handles_list,
+  since_id = c("1500208536156000000"),
+  max_id = c("1500932588436860000")
+)
+
+  statuses <- c(
+    "567053242429734913",
+    "266031293945503744",
+    "1500932588436865039"
+  )
+
+  ## lookup tweets data for given statuses
+  tw <- lookup_tweets(statuses)
+  tw
+```
+
+
+
