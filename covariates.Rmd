@@ -86,6 +86,55 @@ record senator_data_c
 write.csv(senator_data_c,"data/senator_data_c.csv")
 ```
 
+## Add race and ethnicity
+
+Read in race and ethnicity datasets
+
+*Sources for these:*
+Export list of members by biographical characteristics. Washington: CQ Press. Dynamically generated March 31, 2023, from CQ Press Electronic Library, CQ Press Congress Collection: https://library.cqpress.com/congress/export.php?which=memberbioadv&congress2=236&position2=2&yearlimit=0&race=1
+Export list of members by biographical characteristics. Washington: CQ Press. Dynamically generated March 31, 2023, from CQ Press Electronic Library, CQ Press Congress Collection: https://library.cqpress.com/congress/export.php?which=memberbioadv&congress2=236&position2=2&yearlimit=0&race=4
+Export list of members by biographical characteristics. Washington: CQ Press. Dynamically generated March 31, 2023, from CQ Press Electronic Library, CQ Press Congress Collection: https://library.cqpress.com/congress/export.php?which=memberbioadv&congress2=236&position2=2&yearlimit=0&race=6
+Export list of members by biographical characteristics. Washington: CQ Press. Dynamically generated March 31, 2023, from CQ Press Electronic Library, CQ Press Congress Collection: https://library.cqpress.com/congress/export.php?which=memberbioadv&congress2=236&position2=2&yearlimit=0&race=3
+Export list of members by biographical characteristics. Washington: CQ Press. Dynamically generated March 31, 2023, from CQ Press Electronic Library, CQ Press Congress Collection: https://library.cqpress.com/congress/export.php?which=memberbioadv&congress2=236&position2=2&yearlimit=0&race=2
+
+Some of the first names have been manually altered to match my previous data. For example, Addison Mitch McConnell was 
+changed to Mitch McConnel to match what was in my senator dataset even though Addison Mitch McConnell is probably
+the correct name.
+
+Alejandro (Alex) Padilla is latino per: https://history.house.gov/People/Search?Term=Search&SearchIn=LastName&ShowNonMember=true&ShowNonMember=false&Office=&Leadership=&State=&Party=&ContinentalCongress=false&BlackAmericansInCongress=false&WomenInCongress=false&HispanicAmericansInCongress=true&HispanicAmericansInCongress=false&AsianPacificAmericansInCongress=false&CongressNumberList=117&PreviousSearch=Search%2cLastName%2c%2c%2c%2c%2cFalse%2cFalse%2cFalse%2c117%2cLastName&CurrentPage=4&SortOrder=LastName&ResultType=Grid&Command=3
+
+Added Raphel Warnock to African American list per:
+https://history.house.gov/People/Search?Term=Search&SearchIn=LastName&ShowNonMember=true&ShowNonMember=false&Office=&Leadership=&State=&Party=&ContinentalCongress=false&BlackAmericansInCongress=true&BlackAmericansInCongress=false&WomenInCongress=false&HispanicAmericansInCongress=false&AsianPacificAmericansInCongress=false&CongressNumberList=117&PreviousSearch=Search%2cLastName%2c%2c%2c%2c%2cFalse%2cTrue%2cFalse%2c117%2cLastName&CurrentPage=1&SortOrder=LastName&ResultType=Grid&Command=6
+
+```{r}
+hispanic_senators <- read.csv("data/race_ethnicity/hispanic_117_senate.csv")
+race_not_specified_senators <- read.csv("data/race_ethnicity/race_not_specified_117_senate.csv")
+white_senators <- read.csv("data/race_ethnicity/white_117_senate.csv")
+african_american_senators <- read.csv("data/race_ethnicity/african_american_117_senate.csv")
+asian_american_senators <- read.csv("data/race_ethnicity/asian_american_117_senate.csv")
+```
+```{r}
+hispanic_senators <- data.frame(lapply(hispanic_senators, tolower))
+race_not_specified_senators <- data.frame(lapply(race_not_specified_senators, tolower))
+white_senators <- data.frame(lapply(white_senators, tolower))
+african_american_senators <- data.frame(lapply(african_american_senators, tolower))
+asian_american_senators <- data.frame(lapply(asian_american_senators, tolower))
+```
+
+
+
+
+Add the race data to senator data
+```{r}
+race_data_senators <- rbind(hispanic_senators, race_not_specified_senators, white_senators, african_american_senators, asian_american_senators)
+
+senator_data_d <- senator_data_c %>%
+  left_join(select(race_data_senators, Race, Last, First), by = c("last_name" = "Last", "first_name" = "First"))
+```
+
+
+
+
 
 
 ```{r}
