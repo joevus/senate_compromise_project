@@ -168,16 +168,17 @@ for(i in 1:nrow(senator_data_match)){
   senator_data_match[i,]$num_matches <- senator_data_match[i,]$num_matches + num_match
 }
 
-write.csv(senator_handles_df, "data/senator_handles_table_draft.csv")
-write.csv(senator_data_match, "data/senator_data_match.csv")
-# search senator handles list for handle that contains last name
-  # tolower senator handles
-# add senator id / first and last name to column in that row
-# count how many times each senator handle has been matched
-# print out the handles that were matched by more than one last name
+write.csv(senator_handles_df, "data/senator_handles_table_draft.csv", row.names = FALSE)
+write.csv(senator_data_match, "data/senator_data_match.csv", row.names = FALSE)
 ```
 
-I manually checked the `senator_handles_table_draft.csv` file to amek sure that the matches from
+Record senator_data_d for later use
+```{r}
+write.csv(senator_data_d, "data/senator_data_d.csv", row.names = FALSE)
+```
+
+
+I manually checked the `senator_handles_table_draft.csv` file to make sure that the matches from
 `senator_data_match` were the correct ones. There were a few corrections, including:
 - Hyde-Smith and Smith
 - the two Scotts
