@@ -132,17 +132,85 @@ senator_data_d <- senator_data_c %>%
   left_join(select(race_data_senators, Race, Last, First), by = c("last_name" = "Last", "first_name" = "First"))
 ```
 
-
-
-
-
+## Create list of senator handles
 
 ```{r}
 members <- lists_members(list_id = 63915645 )
 senator_handles_list <- members$screen_name
 senator_handles_df<-as.data.frame(senator_handles_list)
-write.csv(senator_handles_df$senator_handles_list, "data/senator_handles.csv")
+write.csv(senator_handles_df$senator_handles_list, "data/senator_handles_from_twitter_list.csv")
 ```
+
+```{r}
+# loop through list of senators
+senator_data_match <- senator_data_d
+senator_data_match$num_matches <- 0
+senator_handles_df<-as.data.frame(senator_handles_list)
+senator_handles_df$last_name <- NA
+senator_handles_df$senator_id <- NA
+senator_handles_df <- data.frame(lapply(senator_handles_df, tolower))
+
+
+for(i in 1:nrow(senator_data_match)){
+  last_name <- senator_data_match[i,]$last_name
+  senator_id <- senator_data_match[i,]$id
+  # if last name has hyphen or space, split and take first part
+  last_name <- unlist(strsplit(last_name, "-|\\s"))[1]
+  match_indx <- grep(last_name, senator_handles_df$senator_handles_list)
+  if(length(match_indx) == 0) {
+    # go to next senator in list if no match
+    # don't attempt to record name or increment num_matches
+    next
+  }
+  num_match <- length(match_indx)
+  senator_handles_df[match_indx,]$last_name <- last_name
+  senator_handles_df[match_indx,]$senator_id <- senator_id
+  senator_data_match[i,]$num_matches <- senator_data_match[i,]$num_matches + num_match
+}
+
+write.csv(senator_handles_df, "data/senator_handles_table_draft.csv")
+write.csv(senator_data_match, "data/senator_data_match.csv")
+# search senator handles list for handle that contains last name
+  # tolower senator handles
+# add senator id / first and last name to column in that row
+# count how many times each senator handle has been matched
+# print out the handles that were matched by more than one last name
+```
+
+I manually checked the `senator_handles_table_draft.csv` file to amek sure that the matches from
+`senator_data_match` were the correct ones. There were a few corrections, including:
+- Hyde-Smith and Smith
+- the two Scotts
+- Ben Lujan, manually matched
+
+Now working on those who came up with 0 matches in the `senator_data_match`
+And those who have `NA` in the `senator_handles_table.csv` file.
+
+These handles belong to Senators who were not part of the Senate in the timeframes in question,
+they have been removed manually from `senator_handles_table.csv`. Identified by seeing `NA`
+in `senator_handles_table.csv`
+- Kamala Harris (142)
+- SenAlexander, Lamar Alexander (128)
+- lamaralexander, Lamar Alexander (155)
+
+Senator handles added which were identified by spotting a 0 in the `senator_data_match.csv` file.
+- benraylujan maunually matched to Ben Lujan
+- senatorlujan manually matched to Ben Lujan
+- AlexPadilla4CA
+- SenAlexPadilla
+- SenatorWarnock
+- ReverendWarnock
+
+Senator handles with `NA` in `senator_handles_table.csv` that belonged to a Senator in `senator_data_match` but hadn't matched correctly and have been manually corrected in
+`senator_handles_table.csv`
+- senatorhick manually matched to hickenlooper
+- sheldonforri manually matched to sheldon whitehouse
+- angusformaine manually matched to angus king
+- debfornebraska manually matched to deb fischer
+- mazieforhawaii manually matched to mazie hirono
+- lisaforsenate manually matched to Lisa Murkowski
+- votemarsha manually matched to Marsha Blackburn
+
 
 
 
