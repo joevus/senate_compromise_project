@@ -1,0 +1,138 @@
+---
+title: "pull tweets"
+author: "hoskisson"
+date: "2023-04-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rtweet)
+library(tidyverse)
+```
+
+```{r}
+auth <- rtweet_app()
+```
+
+```{r}
+auth_as(auth)
+```
+
+```{r}
+senator_handles_table <- read.csv("data/senator_handles_table.csv")
+handles <- senator_handles_table$senator_handles_list
+```
+
+American Rescue Plan Act of 2021
+```{r}
+american_rescue_2021 <- get_timeline(
+  user=handles,
+  since_id = c("1495486916082425857"),
+  max_id = c("1500957088738160643")
+)
+
+american_rescue_2021_users <- users_data(american_rescue_2021)
+```
+
+```{r}
+# remove columns that are lists because they will cause errors
+american_rescue_2021_selected <- american_rescue_2021 %>%
+  select(-c(geo, coordinates, entities, place, possibly_sensitive, retweeted_status, quoted_status, quoted_status_permalink, withheld_in_countries))
+
+write.csv(american_rescue_2021_selected, "data/raw_tweets/american_rescue_2021.csv", row.names = FALSE)
+
+american_rescue_2021_users_selected <- american_rescue_2021_users %>%
+  select(-c(derived, withheld_in_countries, entities))
+
+write.csv(american_rescue_2021_users_selected, "data/raw_tweets/american_rescue_2021_users.csv", row.names = FALSE)
+```
+
+Respect for marriage act 2022
+```{r}
+respect_for_marriage <- get_timeline(
+  user=handles,
+  max_id = c("1598011580016304128"),
+  since_id = c("1592524893316579329")
+)
+
+respect_for_marriage_users <- users_data(respect_for_marriage)
+```
+
+```{r}
+respect_for_marriage %>%
+  select(-c(geo, coordinates, entities, place, possibly_sensitive, retweeted_status, quoted_status, quoted_status_permalink, withheld_in_countries)) %>%
+  write.csv("data/raw_tweets/respect_for_marriage.csv")
+
+respect_for_marriage_users %>%
+  select(-c(derived, withheld_in_countries, entities)) %>%
+  write.csv("data/raw_tweets/respect_for_marriage_users.csv")
+```
+
+Inflation Reduction Act 2022
+```{r}
+inflation_reduction <- get_timeline(
+  user=handles,
+  since_id = c("1551208949382258690"),
+  max_id = c("1556772322832310272")
+)
+
+inflation_reduction_users <- users_data(inflation_reduction)
+```
+
+```{r}
+inflation_reduction %>%
+  select(-c(geo, coordinates, entities, place, possibly_sensitive, retweeted_status, quoted_status, quoted_status_permalink, withheld_in_countries)) %>%
+  write.csv("data/raw_tweets/inflation_reduction.csv")
+
+inflation_reduction_users %>%
+  select(-c(derived, withheld_in_countries, entities)) %>%
+  write.csv("data/raw_tweets/inflation_reduction_users.csv")
+```
+
+Bipartisan Safer Communities Act of 2022
+
+```{r}
+safer_communities <- get_timeline(
+  user=handles,
+  since_id = c("1534892587399643137"),
+  max_id = c("1540421395804463107")
+)
+
+safer_communities_users <- users_data(safer_communities)
+```
+
+```{r}
+safer_communities %>%
+  select(-c(geo, coordinates, entities, place, possibly_sensitive, retweeted_status, quoted_status, quoted_status_permalink, withheld_in_countries)) %>%
+  write.csv("data/raw_tweets/safer_communities.csv")
+
+safer_communities_users %>%
+  select(-c(derived, withheld_in_countries, entities)) %>%
+  write.csv("data/raw_tweets/safer_communities_users.csv")
+```
+
+Infrastructure Investment and Jobs Act of 2021
+```{r}
+infrastructure_investment <- get_timeline(
+  user=handles,
+  since_id = c("1420021866262040577"),
+  max_id = c("1425616774146543618")
+)
+
+infrastructure_investment_users <- users_data(infrastructure_investment)
+```
+
+```{r}
+infrastructure_investment %>%
+  select(-c(geo, coordinates, entities, place, possibly_sensitive, retweeted_status, quoted_status, quoted_status_permalink, withheld_in_countries)) %>%
+  write.csv("data/raw_tweets/infrastructure_investment.csv")
+
+infrastructure_investment_users %>%
+  select(-c(derived, withheld_in_countries, entities)) %>%
+  write.csv("data/raw_tweets/infrastructure_users.csv")
+```
+
