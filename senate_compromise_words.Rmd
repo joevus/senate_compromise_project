@@ -33,12 +33,70 @@ American Rescue Plan of 2021
 
 Read Data
 ```{r}
-american_rescue <- read.csv2("data/american_rescue_2021.csv", sep=",")
-inflation_reduction <- read.csv2("data/inflation_reduction.csv", sep=",")
-infrastructure_investment <- read.csv2("data/infrastructure_investment.csv", sep=",")
-respect_for_marriage <- read.csv2("data/respect_for_marriage.csv", sep=",")
-safer_communities <- read.csv2("data/safer_communities.csv", sep=",")
+american_rescue <- read.csv("data/raw_tweets/american_rescue_2021.csv") %>%
+  select(c(created_at, id, id_str, text, full_text, retweet_count))
+american_rescue_users <- read.csv("data/raw_tweets/american_rescue_2021_users.csv") %>%
+  rename(
+    user_id = id,
+    user_id_str = id_str,
+  ) %>%
+  select(c(user_id, user_id_str, screen_name, followers_count))
+
+inflation_reduction <- read.csv("data/raw_tweets/inflation_reduction.csv") %>%
+  select(c(created_at, id, id_str, text, full_text, retweet_count))
+inflation_reduction_users <- read.csv("data/raw_tweets/inflation_reduction_users.csv") %>%
+  rename(
+    user_id = id,
+    user_id_str = id_str,
+  ) %>%
+  select(c(user_id, user_id_str, screen_name, followers_count))
+
+infrastructure_investment <- read.csv("data/raw_tweets/infrastructure_investment.csv") %>%
+  select(c(created_at, id, id_str, text, full_text, retweet_count))
+infrastructure_investment_users <- read.csv("data/raw_tweets/infrastructure_users.csv") %>%
+  rename(
+    user_id = id,
+    user_id_str = id_str,
+  ) %>%
+  select(c(user_id, user_id_str, screen_name, followers_count))
+
+respect_for_marriage <- read.csv("data/raw_tweets/respect_for_marriage.csv") %>%
+  select(c(created_at, id, id_str, text, full_text, retweet_count))
+respect_for_marriage_users <- read.csv("data/raw_tweets/respect_for_marriage_users.csv") %>%
+  rename(
+    user_id = id,
+    user_id_str = id_str,
+  ) %>%
+  select(c(user_id, user_id_str, screen_name, followers_count))
+
+safer_communities <- read.csv("data/raw_tweets/safer_communities.csv") %>%
+  select(c(created_at, id, id_str, text, full_text, retweet_count))
+safer_communities_users <- read.csv("data/raw_tweets/safer_communities_users.csv") %>%
+  rename(
+    user_id = id,
+    user_id_str = id_str,
+  ) %>%
+  select(c(user_id, user_id_str, screen_name, followers_count))
 ```
+
+Combine Tweet and user data
+```{r}
+american_rescue <- american_rescue %>%
+  cbind(american_rescue_users)
+
+inflation_reduction <- inflation_reduction %>%
+  cbind(inflation_reduction_users)
+
+infrastructure_investment <- infrastructure_investment %>%
+  cbind(infrastructure_investment_users)
+
+respect_for_marriage <- respect_for_marriage %>%
+  cbind(respect_for_marriage_users)
+
+safer_communities <- safer_communities %>%
+  cbind(safer_communities_users)
+```
+
 
 ## Enhance data
 
