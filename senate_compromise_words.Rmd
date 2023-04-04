@@ -97,6 +97,19 @@ safer_communities <- safer_communities %>%
   cbind(safer_communities_users)
 ```
 
+Narrow dates to day before bill passed
+```{r}
+american_rescue <- american_rescue %>% filter(created_at < '2022-03-06')
+
+inflation_reduction <- inflation_reduction %>% filter(created_at < '2022-08-07')
+
+infrastructure_investment <- infrastructure_investment %>% filter(created_at < '2021-08-10')
+
+respect_for_marriage <- respect_for_marriage %>% filter(created_at < '2022-11-29')
+
+safer_communities <- safer_communities %>% filter(created_at < '2022-06-23')
+```
+
 
 ## Enhance data
 
