@@ -27,7 +27,7 @@ senator_handles_table <- read.csv("data/senator_handles_table.csv")
 handles <- senator_handles_table$senator_handles_list
 ```
 
-American Rescue Plan Act of 2021
+## American Rescue Plan Act of 2021
 ```{r}
 american_rescue_2021 <- get_timeline(
   user=handles,
@@ -51,7 +51,7 @@ american_rescue_2021_users_selected <- american_rescue_2021_users %>%
 write.csv(american_rescue_2021_users_selected, "data/raw_tweets/american_rescue_2021_users.csv", row.names = FALSE)
 ```
 
-Respect for marriage act 2022
+## Respect for marriage act 2022
 ```{r}
 respect_for_marriage <- get_timeline(
   user=handles,
@@ -72,7 +72,7 @@ respect_for_marriage_users %>%
   write.csv("data/raw_tweets/respect_for_marriage_users.csv")
 ```
 
-Inflation Reduction Act 2022
+## Inflation Reduction Act 2022
 ```{r}
 inflation_reduction <- get_timeline(
   user=handles,
@@ -93,7 +93,7 @@ inflation_reduction_users %>%
   write.csv("data/raw_tweets/inflation_reduction_users.csv")
 ```
 
-Bipartisan Safer Communities Act of 2022
+## Bipartisan Safer Communities Act of 2022
 
 ```{r}
 safer_communities <- get_timeline(
@@ -115,7 +115,7 @@ safer_communities_users %>%
   write.csv("data/raw_tweets/safer_communities_users.csv")
 ```
 
-Infrastructure Investment and Jobs Act of 2021
+## Infrastructure Investment and Jobs Act of 2021
 ```{r}
 infrastructure_investment <- get_timeline(
   user=handles,
