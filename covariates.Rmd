@@ -214,41 +214,5 @@ Senator handles with `NA` in `senator_handles_table.csv` that belonged to a Sena
 
 
 
-```{r}
-rstats <- search_tweets("#rstats", n = 2, include_rts = FALSE)
-colnames(rstats)
-rstats[1:5, c("created_at", "text", "id_str")]
-```
-
-```{r}
-lookup_tweets(statuses = c("1500932588436860000"))
-lookup_users(c("1499557773687800000"))
-get_retweets("1499557773687800000")
-tweet_get("1500932588436860000")
-```
-
-```{r}
-user_info <- lookup_users(tweet_id = "123456789", token = token)
-```
-
-
-```{r}
-american_rescue_2021 <- get_timeline(
-  user=senator_handles_list,
-  since_id = c("1500208536156000000"),
-  max_id = c("1500932588436860000")
-)
-
-  statuses <- c(
-    "567053242429734913",
-    "266031293945503744",
-    "1500932588436865039"
-  )
-
-  ## lookup tweets data for given statuses
-  tw <- lookup_tweets(statuses)
-  tw
-```
-
 
 
