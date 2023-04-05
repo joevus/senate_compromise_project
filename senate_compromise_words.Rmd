@@ -149,6 +149,39 @@ safer_communities <- safer_communities %>%
   left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
 ```
 
+Add age
+```{r}
+american_rescue <- american_rescue %>%
+  mutate(created_at = as.Date(created_at)) %>%
+  mutate(birthday = as.Date(birthday)) %>%
+  mutate(age = as.numeric(difftime(created_at, birthday, units = "days"))/365) %>%
+  mutate(age = floor(age))
+
+inflation_reduction <- inflation_reduction %>%
+  mutate(created_at = as.Date(created_at)) %>%
+  mutate(birthday = as.Date(birthday)) %>%
+  mutate(age = as.numeric(difftime(created_at, birthday, units = "days"))/365) %>%
+  mutate(age = floor(age))
+
+infrastructure_investment <- infrastructure_investment %>%
+  mutate(created_at = as.Date(created_at)) %>%
+  mutate(birthday = as.Date(birthday)) %>%
+  mutate(age = as.numeric(difftime(created_at, birthday, units = "days"))/365) %>%
+  mutate(age = floor(age))
+
+respect_for_marriage <- respect_for_marriage %>%
+  mutate(created_at = as.Date(created_at)) %>%
+  mutate(birthday = as.Date(birthday)) %>%
+  mutate(age = as.numeric(difftime(created_at, birthday, units = "days"))/365) %>%
+  mutate(age = floor(age))
+
+safer_communities <- safer_communities %>%
+  mutate(created_at = as.Date(created_at)) %>%
+  mutate(birthday = as.Date(birthday)) %>%
+  mutate(age = as.numeric(difftime(created_at, birthday, units = "days"))/365) %>%
+  mutate(age = floor(age))
+```
+
 
 
 Add one column to each Tweet collection for whether the collection was connected
