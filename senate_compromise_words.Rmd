@@ -471,7 +471,7 @@ all_tweets$word_count_bipartisan = NA
 all_tweets$word_present_bipartisan = NA
 
 for(i in 1:nrow(all_tweets)) {
-  tweet_id <- all_tweets[i, "id"]
+  tweet_id <- all_tweets[i, "id_str"]
   bipartisan_count <- target_words_all[target_words_all$doc_id == tweet_id,]$bipartisan
   all_tweets[i, "word_count_bipartisan"] <- bipartisan_count
   
@@ -481,9 +481,6 @@ for(i in 1:nrow(all_tweets)) {
   }
   all_tweets[i, "word_present_bipartisan"] <- word_present_bipartisan
 }
-
-## 
-
 ```
 Now we have two new columns in the all_tweets dataset.
 
