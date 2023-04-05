@@ -113,6 +113,44 @@ safer_communities <- safer_communities %>% filter(created_at < '2022-06-23')
 
 ## Enhance data
 
+Read in covariates and senator list
+```{r}
+senator_variables <- read.csv("data/senator_data_d.csv")
+senator_handles <- read.csv("data/senator_handles_table.csv")
+```
+
+Join senator handles to tweet collections to get senator ids in tweet collections
+Then, combine covariates with tweet collections by joining by senator id
+```{r}
+american_rescue$screen_name <- tolower(american_rescue$screen_name)
+inflation_reduction$screen_name <- tolower(inflation_reduction$screen_name)
+infrastructure_investment$screen_name <- tolower(infrastructure_investment$screen_name)
+respect_for_marriage$screen_name <- tolower(respect_for_marriage$screen_name)
+safer_communities$screen_name <- tolower(safer_communities$screen_name)
+
+american_rescue <- american_rescue %>%
+  left_join(select(senator_handles, senator_handles_list, senator_id), by = c("screen_name" = "senator_handles_list")) %>%
+  left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
+
+inflation_reduction <- inflation_reduction %>%
+  left_join(select(senator_handles, senator_handles_list, senator_id), by = c("screen_name" = "senator_handles_list")) %>%
+  left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
+
+infrastructure_investment <- infrastructure_investment %>%
+  left_join(select(senator_handles, senator_handles_list, senator_id), by = c("screen_name" = "senator_handles_list")) %>%
+  left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
+
+respect_for_marriage <- respect_for_marriage %>%
+  left_join(select(senator_handles, senator_handles_list, senator_id), by = c("screen_name" = "senator_handles_list")) %>%
+  left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
+
+safer_communities <- safer_communities %>%
+  left_join(select(senator_handles, senator_handles_list, senator_id), by = c("screen_name" = "senator_handles_list")) %>%
+  left_join(select(senator_variables, -c(type, full_name)), by = c("senator_id" = "id"))
+```
+
+
+
 Add one column to each Tweet collection for whether the collection was connected
 to a bipartisan bill or not. Uses the variable name `bipartisan_bill`. Coded
 `1` for a bipartisan bill and `0` for a partisan bill.
