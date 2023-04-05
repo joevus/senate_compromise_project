@@ -393,6 +393,8 @@ comparing top 20 words in compromise vs non compromise tweets
 
 ## Frequency of certain words in compromise versus non-compromise bill Tweets
 
+These need to be compared against some baseline like number of Tweets or number of words/tokens.
+
 https://stackoverflow.com/questions/65140308/in-r-how-can-i-count-specific-words-in-a-corpus
 
 ```{r}
