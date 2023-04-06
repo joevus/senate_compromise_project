@@ -1,0 +1,146 @@
+---
+title: "calendar"
+author: "hoskisson"
+date: "2023-04-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(calendR)
+```
+
+Source for using R Calendar: https://r-coder.com/calendar-plot-r/
+
+```{r}
+# file.remove("calendars/infrastructure_calendar.pdf")
+# Vector of NA of the same length of the number of days of the year
+events <- rep(NA, 62)
+
+# Set the corresponding events
+events[27:40] <- "Tweet Capture Window"
+events[41] <- "Vote"
+
+calendR(
+  start_date = "2021-07-01",
+  end_date = "2021-08-31",
+  pdf = TRUE,
+  doc_name = "calendars/infrastructure_calendar",
+  special.days = events,
+  special.col = c("lightgreen", "lightsalmon"),
+  title = "Infrastructure Investment 2021",
+  title.size = 36,
+  day.size = 6,
+  months.size = 20,
+  legend.pos = "right"
+  )
+```
+
+
+```{r}
+# Vector of NA of the same length of the number of days of the year
+events <- rep(NA, 59)
+
+# Set the corresponding events
+events[20:33] <- "Tweet Capture Window"
+events[34] <- "Vote"
+
+calendR(
+  start_date = "2022-02-01",
+  end_date = "2022-03-31",
+  pdf = TRUE,
+  doc_name = paste("calendars/american_rescue"),
+  special.days = events,
+  special.col = c("lightgreen", "lightsalmon"),
+  title = "American Rescue 2022",
+  title.size = 36,
+  day.size = 6,
+  months.size = 20,
+  legend.pos = "right"
+  )
+```
+
+
+```{r}
+# Vector of NA of the same length of the number of days of the year
+events <- rep(NA, 30)
+
+# Set the corresponding events
+events[9:22] <- "Tweet Capture Window"
+events[23] <- "Vote"
+
+calendR(
+  start_date = "2022-06-01",
+  end_date = "2022-06-30",
+  pdf = TRUE,
+  doc_name = paste("calendars/safer_communities"),
+  special.days = events,
+  special.col = c("lightgreen", "lightsalmon"),
+  title = "Bipartisan Safer Communities 2022",
+  title.size = 36,
+  day.size = 6,
+  months.size = 20,
+  legend.pos = "right"
+  )
+```
+
+
+```{r}
+# Vector of NA of the same length of the number of days of the year
+events <- rep(NA, 62)
+
+# Set the corresponding events
+events[24:37] <- "Tweet Capture Window"
+events[38] <- "Vote"
+
+calendR(
+  start_date = "2022-07-01",
+  end_date = "2022-08-31",
+  pdf = TRUE,
+  doc_name = paste("calendars/inflation_reduction"),
+  special.days = events,
+  special.col = c("lightgreen", "lightsalmon"),
+  title = "Inflation Reduction 2022",
+  title.size = 36,
+  day.size = 6,
+  months.size = 20,
+  legend.pos = "right"
+  )
+```
+
+```{r}
+# Vector of NA of the same length of the number of days of the year
+events <- rep(NA, 30)
+
+# Set the corresponding events
+events[15:28] <- "Tweet Capture Window"
+events[29] <- "Vote"
+
+calendR(
+  start_date = "2022-11-01",
+  end_date = "2022-11-30",
+  pdf = TRUE,
+  doc_name = paste("calendars/respect_marriage"),
+  special.days = events,
+  special.col = c("lightgreen", "lightsalmon"),
+  title = "Respect for Marriage 2022",
+  title.size = 36,
+  day.size = 6,
+  months.size = 20,
+  legend.pos = "right"
+  )
+```
+
+
+
+
+
+
+
+
+
+
+
