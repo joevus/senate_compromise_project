@@ -14,6 +14,7 @@ libraries
 library(quanteda) # https://quanteda.io/
 library("quanteda.textplots")
 library("quanteda.textstats")
+library(tidyverse)
 ```
 
 
@@ -331,8 +332,26 @@ from https://quanteda.io/articles/quickstart.html
 
 ## Top words overall
 ```{r}
-topfeatures(dtm_all_tweets_a, 20)
+top_words_all <- topfeatures(dtm_all_tweets_a, 10)
+
+top_words_all_df <- data.frame(count = top_words_all,
+                               word = names(top_words_all))
+row.names(top_words_all_df) <- NULL
+
+p_top_words_all <- ggplot(data=top_words_all_df, aes(x=reorder(word, -count), y=count)) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="Top word count - All Tweets") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = -45, size =14),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  ylim(0,4000)
+
+p_top_words_all
 ```
+
+
 
 
 ## Top words in each act collection
@@ -361,11 +380,14 @@ topfeatures(dtm_safer_communities_a, 20)
 ## Top words in compromise Tweets versus not compromise Tweets
 
 ```{r}
-topfeatures(dtm_bipartisan_collection_a, 20)
+top_words_bipartisan <- topfeatures(dtm_bipartisan_collection_a, 10)
 ```
 
+
+
+
 ```{r}
-topfeatures(dtm_partisan_collection_a, 20)
+top_words_partisan <- topfeatures(dtm_partisan_collection_a, 10)
 ```
 
 The word "act" is ranked 2 in the partisan collection and 10 in the bipartisan collection.
