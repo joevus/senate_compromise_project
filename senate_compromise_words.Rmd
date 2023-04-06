@@ -490,11 +490,30 @@ Tweet.
 The column word_present_bipartisan is coded as a 1 if the word bipartisan is present at least once
 in the Tweet and 0 if it is not.
 
+Other words to consider:
+- moderate
+- thank
+- cooperation
+- collaboration
+- consensus
+- agreement
+- negotiation
+- mutual respect
+- common ground
+- bridge-building
+
 ```{r}
-logit_bipartisan <- glm(bipartisan_bill ~ word_present_bipartisan, data=all_tweets, family="binomial")
+logit_bipartisan <- glm(bipartisan_bill ~ word_present_bipartisan + party + gender + age + Race, data=all_tweets, family="binomial")
 summary(logit_bipartisan)
 ## odds ratios and 95% CI
 exp(cbind(OR = coef(logit_bipartisan), confint(logit_bipartisan))) # see https://stats.oarc.ucla.edu/r/dae/logit-regression/
+```
+
+
+```{r}
+lm_bipartisan <- lm(bipartisan_votes ~ word_present_bipartisan + party + gender + age + Race, data=all_tweets)
+
+summary(lm_bipartisan)
 ```
 
 
@@ -507,7 +526,7 @@ See https://quanteda.io/articles/quickstart.html
 ```{r}
 textplot_wordcloud(
   dtm_bipartisan_collection_a,
-  max_words = 100,
+  max_words = 40,
   rotation = 0.25,
   color = rev(RColorBrewer::brewer.pal(10, "RdBu"))
 )
@@ -515,7 +534,7 @@ textplot_wordcloud(
 
 ```{r}
 textplot_wordcloud(
-  dtm_partisan_collection_a, max_words=100,
+  dtm_partisan_collection_a, max_words=40,
   rotation = 0.25,
   color = rev(RColorBrewer::brewer.pal(10, "RdBu"))
 )
