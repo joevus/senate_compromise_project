@@ -348,7 +348,13 @@ p_top_words_all <- ggplot(data=top_words_all_df, aes(x=reorder(word, -count), y=
   ) +
   ylim(0,4000)
 
+
 p_top_words_all
+```
+
+Save chart
+```{r}
+ggsave("plots/p_top_words_all.png", plot = p_top_words_all)
 ```
 
 
@@ -381,6 +387,22 @@ topfeatures(dtm_safer_communities_a, 20)
 
 ```{r}
 top_words_bipartisan <- topfeatures(dtm_bipartisan_collection_a, 10)
+
+top_words_bipartisan_df <- data.frame(count = top_words_bipartisan,
+                               word = names(top_words_bipartisan))
+row.names(top_words_bipartisan_df) <- NULL
+
+p_top_words_bipartisan_df <- ggplot(data=top_words_bipartisan_df, aes(x=reorder(word, -count), y=count)) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="Top word count - Bipartisan Bill Tweets") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = -45, size =14),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+
+p_top_words_bipartisan_df
 ```
 
 
@@ -388,6 +410,21 @@ top_words_bipartisan <- topfeatures(dtm_bipartisan_collection_a, 10)
 
 ```{r}
 top_words_partisan <- topfeatures(dtm_partisan_collection_a, 10)
+
+top_words_partisan_df <- data.frame(count = top_words_partisan,
+                               word = names(top_words_partisan))
+row.names(top_words_partisan_df) <- NULL
+
+p_top_words_partisan_df <- ggplot(data=top_words_partisan_df, aes(x=reorder(word, -count), y=count)) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="Top word count - Partisan Bill Tweets") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = -45, size =14),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+p_top_words_partisan_df
 ```
 
 The word "act" is ranked 2 in the partisan collection and 10 in the bipartisan collection.
