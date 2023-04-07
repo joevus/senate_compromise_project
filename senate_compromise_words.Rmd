@@ -385,6 +385,8 @@ topfeatures(dtm_safer_communities_a, 20)
 
 ## Top words in compromise Tweets versus not compromise Tweets
 
+### Bipartisan collection
+
 ```{r}
 top_words_bipartisan <- topfeatures(dtm_bipartisan_collection_a, 10)
 
@@ -394,7 +396,7 @@ row.names(top_words_bipartisan_df) <- NULL
 
 p_top_words_bipartisan_df <- ggplot(data=top_words_bipartisan_df, aes(x=reorder(word, -count), y=count)) +
   geom_bar(stat="identity", fill="firebrick", width = 0.5)+
-  labs(x = "", y="", title="Top word count - Bipartisan Bill Tweets") +
+  labs(x = "", y="", title="Top word count, bipartisan collection") +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = -45, size =14),
@@ -405,8 +407,31 @@ p_top_words_bipartisan_df <- ggplot(data=top_words_bipartisan_df, aes(x=reorder(
 p_top_words_bipartisan_df
 ```
 
+```{r}
+ggsave("plots/p_top_words_bipartisan_df.png", plot = p_top_words_bipartisan_df)
+```
 
+```{r}
+top_words_bipartisan_df$normalized_count <- top_words_bipartisan_df$count / nrow(bipartisan_collection)
 
+p_top_words_bipartisan_normalized <- ggplot(data=top_words_bipartisan_df, aes(x=reorder(word, -normalized_count), y=normalized_count)) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="(word count) / (number of tweets), bipartisan collection") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = -45, size =14),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  ylim(0, 0.15)
+
+p_top_words_bipartisan_normalized
+```
+
+```{r}
+ggsave("plots/p_top_words_bipartisan_normalized.png", plot = p_top_words_bipartisan_normalized)
+```
+
+### Partisan collection
 
 ```{r}
 top_words_partisan <- topfeatures(dtm_partisan_collection_a, 10)
@@ -425,6 +450,28 @@ p_top_words_partisan_df <- ggplot(data=top_words_partisan_df, aes(x=reorder(word
   )
 
 p_top_words_partisan_df
+```
+```{r}
+ggsave("plots/p_top_words_partisan_df.png", plot = p_top_words_partisan_df)
+```
+
+```{r}
+top_words_partisan_df$normalized_count <- top_words_partisan_df$count / nrow(partisan_collection)
+
+p_top_words_partisan_normalized <- ggplot(data=top_words_partisan_df, aes(x=reorder(word, -normalized_count), y=normalized_count)) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="(word count) / (number of tweets), partisan collection") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = -45, size =14),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  ylim(0, 0.15)
+
+p_top_words_partisan_normalized
+```
+```{r}
+ggsave("plots/p_top_words_partisan_normalized.png", plot = p_top_words_partisan_normalized)
 ```
 
 The word "act" is ranked 2 in the partisan collection and 10 in the bipartisan collection.
