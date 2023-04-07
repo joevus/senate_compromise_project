@@ -561,6 +561,16 @@ Other words to consider:
 - common ground
 - bridge-building
 
+Make categorical variables factors
+```{r}
+all_tweets$Race <- as.factor(all_tweets$Race)
+all_tweets$gender <- as.factor(all_tweets$gender)
+all_tweets$party <- as.factor(all_tweets$party)
+all_tweets$bipartisan_bill <- as.factor(all_tweets$bipartisan_bill)
+all_tweets$word_present_bipartisan <- as.factor(all_tweets$word_present_bipartisan)
+```
+
+
 ```{r}
 logit_bipartisan <- glm(bipartisan_bill ~ word_present_bipartisan + party + gender + age + Race, data=all_tweets, family="binomial")
 summary(logit_bipartisan)
