@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(rtweet)
 library(tidyverse)
+library(academictwitteR)
+library(jsonlite)
 ```
 
 ```{r}
@@ -26,9 +28,6 @@ token = rtweet::create_token(app = "compromise_words",
 auth_as(auth)
 ```
 
-```{r}
-library(academictwitteR)
-```
 
 ```{r}
 # for academictwitteR
@@ -44,63 +43,113 @@ handles <- senator_handles_table$senator_handles_list
 
 ## American Rescue Plan Act of 2021
 
+Read Tweets with app that has Academic status on the Twitter API.
+Using package academictwitteR
 ```{r}
-#split handles up to 46 groups of 4 handles to keep under the 128 character limit for each query
-# so will be 46 queries
-for(i in 1:46){
-  start_num <- (i - 1) * 4 + 1
-  end_num <- start_num + 3
-  handles_slice <- handles[start_num:end_num]
-  query[i] <- paste0('from:', handles_slice, collapse = ' OR ')
-}
-
-american_rescue_2021_list <- rep(list(NA), 46)
-
-# the below query is ready to try, review first
-for(i in 1:2){
-  american_rescue_2021_list[i] <- search_fullarchive(
-    query[i],
-    n = 1000,
-    env_name="develop",
-    fromDate = "202102200000",
-    toDate = "202103052359",
-    parse = FALSE
-  )
-}
-
-search_fullarchive(
-    "from:PattyMurray",
-    env_name="develop",
-    fromDate = "202102200000",
-    toDate = "202103052359",
-    parse = FALSE
+american_rescue_2021_a <- get_all_tweets(
+  users = handles[1:46],
+  start_tweets = "2021-02-20T00:00:00Z",
+  end_tweets = "2021-03-05T00:00:00Z",
+  file = "data/raw_tweets/american_rescue_2021/american_rescue_2021a",
+  data_path = "data/raw_tweets/american_rescue_2021",
+  n = 100000
 )
 
-search_fullarchive(
-    "fire",
-    env_name="develop",
-    parse = FALSE
+get_all_tweets(
+  users = handles[47:92],
+  start_tweets = "2021-02-20T00:00:00Z",
+  end_tweets = "2021-03-05T00:00:00Z",
+  file = "american_rescue_2021b",
+  data_path = "data/raw_tweets/american_rescue_2021b",
+  n = 100000
 )
-  
-american_rescue_2021_b <- search_fullarchive(query, env_name="develop", fromDate = "202102200000", toDate = "202103052359", parse = FALSE)
+
+get_all_tweets(
+  users = handles[93:138],
+  start_tweets = "2021-02-20T00:00:00Z",
+  end_tweets = "2021-03-05T00:00:00Z",
+  file = "data/raw_tweets/american_rescue_2021c/american_rescue_2021c.RDS",
+  data_path = "data/raw_tweets/american_rescue_2021c",
+  n = 100000
+)
+
+get_all_tweets(
+  users = handles[139:184],
+  start_tweets = "2021-02-20T00:00:00Z",
+  end_tweets = "2021-03-05T00:00:00Z",
+  file = "data/raw_tweets/american_rescue_2021d/american_rescue_2021d.RDS",
+  data_path = "data/raw_tweets/american_rescue_2021d",
+  n = 100000
+)
 ```
 
-
-
 ```{r}
-queried_tweets <- lists_statuses(
-  list_id = "1644449480865980428",
-  n= 1,
-  max_id = tweet_cursor
-)
+american_rescue_2021a_users1 <- fromJSON("data/raw_tweets/american_rescue_2021a/users_1362914870451195904.json")[[1]]
+american_rescue_2021a_users2 <- fromJSON("data/raw_tweets/american_rescue_2021a/users_1363247060879695874.json")[[1]]
+american_rescue_2021a_users3 <- fromJSON("data/raw_tweets/american_rescue_2021a/users_1364945375430344710.json")[[1]]
+american_rescue_2021a_users4 <- fromJSON("data/raw_tweets/american_rescue_2021a/users_1366517877155725320.json")[[1]]
 
-tweet_cursor_old <- tweet_cursor
-tweet_cursor <- tail(queried_tweets)
-tweet_cursor
+american_rescue_2021b_users1 <- fromJSON("data/raw_tweets/american_rescue_2021b/users_1362916020256669699.json")[[1]]
+american_rescue_2021b_users2 <- fromJSON("data/raw_tweets/american_rescue_2021b/users_1364309472651464704.json")[[1]]
+american_rescue_2021b_users3 <- fromJSON("data/raw_tweets/american_rescue_2021b/users_1365327974556442625.json")[[1]]
+american_rescue_2021b_users4 <- fromJSON("data/raw_tweets/american_rescue_2021b/users_1366810294434095106.json")[[1]]
+
+american_rescue_2021c_users1 <- fromJSON("data/raw_tweets/american_rescue_2021c/users_1362920895019442178.json")[[1]]
+american_rescue_2021c_users2 <- fromJSON("data/raw_tweets/american_rescue_2021c/users_1364652461152210949.json")[[1]]
+american_rescue_2021c_users3 <- fromJSON("data/raw_tweets/american_rescue_2021c/users_1366402818039513088.json")[[1]]
+
+american_rescue_2021d_users1 <- fromJSON("data/raw_tweets/american_rescue_2021d/users_1362916888456658947.json")[[1]]
+american_rescue_2021d_users2 <- fromJSON("data/raw_tweets/american_rescue_2021d/users_1364289288477753346.json")[[1]]
+american_rescue_2021d_users3 <- fromJSON("data/raw_tweets/american_rescue_2021d/users_1365337881066287107.json")[[1]]
+american_rescue_2021d_users4 <- fromJSON("data/raw_tweets/american_rescue_2021d/users_1366810813554692097.json")[[1]]
+
+american_rescue_2021_users <- bind_rows(
+  american_rescue_2021a_users1,
+  american_rescue_2021a_users2,
+  american_rescue_2021a_users3,
+  american_rescue_2021a_users4,
+  american_rescue_2021b_users1,
+  american_rescue_2021b_users2,
+  american_rescue_2021b_users3,
+  american_rescue_2021b_users4,
+  american_rescue_2021c_users1,
+  american_rescue_2021c_users2,
+  american_rescue_2021c_users3,
+  american_rescue_2021d_users1,
+  american_rescue_2021d_users2,
+  american_rescue_2021d_users3,
+  american_rescue_2021d_users4
+) %>%
+  select(id, username) %>%
+  distinct(.keep_all = TRUE)
 ```
 
+```{r}
+american_rescue_2021a <- readRDS("data/raw_tweets/american_rescue_2021a/american_rescue_2021a")
+american_rescue_2021b <- readRDS("data/raw_tweets/american_rescue_2021b/american_rescue_2021b")
+american_rescue_2021c <- readRDS("data/raw_tweets/american_rescue_2021c/american_rescue_2021c.RDS")
+american_rescue_2021d <- readRDS("data/raw_tweets/american_rescue_2021d/american_rescue_2021d.RDS")
 
+american_rescue_2021_tweets <- bind_rows(
+  american_rescue_2021a,
+  american_rescue_2021b,
+  american_rescue_2021c,
+  american_rescue_2021d
+)
 
+american_rescue_2021_tweets <- american_rescue_2021_tweets %>%
+  left_join(american_rescue_2021_users, by = c("author_id" = "id"))
+
+# remove columns that are lists and dataframes
+american_rescue_2021_tweets <- american_rescue_2021_tweets %>%
+  select(-c(public_metrics, edit_history_tweet_ids, entities, referenced_tweets, attachments, geo))
+
+american_rescue_2021_tweets$id_str <- american_rescue_2021_tweets$id
+saveRDS(american_rescue_2021_tweets, "data/raw_tweets/american_rescue_2021_corrected.rds")
+```
+
+The rest of this section is old data that I used and accidently queried 2022
+instead of 2021.
 ```{r}
 american_rescue_2021 <- get_timeline(
   user=handles,
