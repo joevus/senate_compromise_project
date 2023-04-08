@@ -15,7 +15,11 @@ library(tidyverse)
 ```
 
 ```{r}
-auth <- rtweet_app()
+token = rtweet::create_token(app = "compromise_words",
+                             consumer_key = NULL,
+                             consumer_secret = NULL,
+                             access_token = "1315770860372811776-ov5CEVpi2NiJYm6xhVynCjFLwyFrbF",
+                             access_secret = "2MU1iCEMn6irCvDKb22lAplQl44PpeH18oeaVIfA75G6H")
 ```
 
 ```{r}
@@ -23,11 +27,80 @@ auth_as(auth)
 ```
 
 ```{r}
+library(academictwitteR)
+```
+
+```{r}
+# for academictwitteR
+set_bearer()
+```
+
+
+
+```{r}
 senator_handles_table <- read.csv("data/senator_handles_table.csv")
 handles <- senator_handles_table$senator_handles_list
 ```
 
 ## American Rescue Plan Act of 2021
+
+```{r}
+#split handles up to 46 groups of 4 handles to keep under the 128 character limit for each query
+# so will be 46 queries
+for(i in 1:46){
+  start_num <- (i - 1) * 4 + 1
+  end_num <- start_num + 3
+  handles_slice <- handles[start_num:end_num]
+  query[i] <- paste0('from:', handles_slice, collapse = ' OR ')
+}
+
+american_rescue_2021_list <- rep(list(NA), 46)
+
+# the below query is ready to try, review first
+for(i in 1:2){
+  american_rescue_2021_list[i] <- search_fullarchive(
+    query[i],
+    n = 1000,
+    env_name="develop",
+    fromDate = "202102200000",
+    toDate = "202103052359",
+    parse = FALSE
+  )
+}
+
+search_fullarchive(
+    "from:PattyMurray",
+    env_name="develop",
+    fromDate = "202102200000",
+    toDate = "202103052359",
+    parse = FALSE
+)
+
+search_fullarchive(
+    "fire",
+    env_name="develop",
+    parse = FALSE
+)
+  
+american_rescue_2021_b <- search_fullarchive(query, env_name="develop", fromDate = "202102200000", toDate = "202103052359", parse = FALSE)
+```
+
+
+
+```{r}
+queried_tweets <- lists_statuses(
+  list_id = "1644449480865980428",
+  n= 1,
+  max_id = tweet_cursor
+)
+
+tweet_cursor_old <- tweet_cursor
+tweet_cursor <- tail(queried_tweets)
+tweet_cursor
+```
+
+
+
 ```{r}
 american_rescue_2021 <- get_timeline(
   user=handles,
