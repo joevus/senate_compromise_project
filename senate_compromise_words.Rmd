@@ -243,7 +243,7 @@ corpus function
 tweets_to_corpus<-function(tweets, num_of_ngrams) {
   tweets_corpus <- corpus(tweets,
                           docid_field = "id_str",
-                          text_field="full_text")
+                          text_field="text")
   
   tweets_corpus_proc <- tokens(tweets_corpus,
                                 remove_punct = TRUE, # remove punctuation
