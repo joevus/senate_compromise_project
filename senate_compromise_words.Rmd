@@ -408,8 +408,8 @@ p_top_words_bipartisan_df <- ggplot(data=top_words_bipartisan_df, aes(x=reorder(
   theme(
     axis.text.x = element_text(angle = -45, size =14),
     plot.title = element_text(hjust = 0.5)
-  )
-
+  ) +
+  ylim(0, 2000)
 
 p_top_words_bipartisan_df
 ```
@@ -454,7 +454,8 @@ p_top_words_partisan_df <- ggplot(data=top_words_partisan_df, aes(x=reorder(word
   theme(
     axis.text.x = element_text(angle = -45, size =14),
     plot.title = element_text(hjust = 0.5)
-  )
+  ) +
+  ylim(0, 2000)
 
 p_top_words_partisan_df
 ```
