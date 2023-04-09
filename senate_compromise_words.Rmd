@@ -42,6 +42,12 @@ american_rescue <- readRDS("data/raw_tweets/american_rescue_2021_corrected.rds")
   rename (
     user_id = author_id,
     screen_name = username
+  ) %>%
+  mutate(
+    full_text = NA,
+    user_id_str = NA,
+    followers_count = NA,
+    retweet_count = NA
   )
 
 inflation_reduction <- read.csv("data/raw_tweets/inflation_reduction.csv") %>%
