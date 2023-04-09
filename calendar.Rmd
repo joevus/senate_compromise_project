@@ -45,17 +45,17 @@ calendR(
 events <- rep(NA, 59)
 
 # Set the corresponding events
-events[20:33] <- "Tweet Capture Window"
+events[20:32] <- "Tweet Capture Window"
 events[34] <- "Vote"
 
 calendR(
-  start_date = "2022-02-01",
-  end_date = "2022-03-31",
+  start_date = "2021-02-01",
+  end_date = "2021-03-31",
   pdf = TRUE,
   doc_name = paste("calendars/american_rescue"),
   special.days = events,
   special.col = c("lightgreen", "lightsalmon"),
-  title = "American Rescue 2022",
+  title = "American Rescue 2021",
   title.size = 36,
   day.size = 6,
   months.size = 20,
