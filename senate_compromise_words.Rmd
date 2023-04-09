@@ -34,14 +34,15 @@ American Rescue Plan of 2021
 
 Read Data
 ```{r}
-american_rescue <- read.csv("data/raw_tweets/american_rescue_2021.csv") %>%
-  select(c(created_at, id, id_str, text, full_text, retweet_count))
-american_rescue_users <- read.csv("data/raw_tweets/american_rescue_2021_users.csv") %>%
-  rename(
-    user_id = id,
-    user_id_str = id_str,
-  ) %>%
-  select(c(user_id, user_id_str, screen_name, followers_count))
+# Use RDS file because CSV file lost data after it turned some digits in the id and id_str strings
+# to zeros.
+american_rescue <- readRDS("data/raw_tweets/american_rescue_2021_corrected.rds") %>%
+  # this one doesn't have full_text or retweet_count
+  select(c(created_at, id, id_str, text, username, author_id)) %>%
+  rename (
+    user_id = author_id,
+    screen_name = username
+  )
 
 inflation_reduction <- read.csv("data/raw_tweets/inflation_reduction.csv") %>%
   select(c(created_at, id, id_str, text, full_text, retweet_count))
@@ -82,8 +83,7 @@ safer_communities_users <- read.csv("data/raw_tweets/safer_communities_users.csv
 
 Combine Tweet and user data
 ```{r}
-american_rescue <- american_rescue %>%
-  cbind(american_rescue_users)
+# american rescue collection already has user data included
 
 inflation_reduction <- inflation_reduction %>%
   cbind(inflation_reduction_users)
@@ -100,7 +100,8 @@ safer_communities <- safer_communities %>%
 
 Narrow dates to day before bill passed
 ```{r}
-american_rescue <- american_rescue %>% filter(created_at < '2022-03-06')
+# american rescue data already narrowed
+# however, may only go to 3/4/2021 instead of 3/5/2021
 
 inflation_reduction <- inflation_reduction %>% filter(created_at < '2022-08-07')
 
