@@ -512,42 +512,121 @@ These need to be compared against some baseline like number of Tweets or number 
 https://stackoverflow.com/questions/65140308/in-r-how-can-i-count-specific-words-in-a-corpus
 
 ```{r}
-dfm_target_words <- bipartisan_collection_corpus_a %>%
+dfm_target_words_bipartisan <- bipartisan_collection_corpus_a %>%
   tokens_select(c(
+    "abortion",
+    "agree",
+    "agreement",
+    "aisle",
     "bipartisan",
-    "compromise",
-    "unity",
-    "unite",
-    "family",
-    "solidarity",
+    "climate",
     "coalition",
-    "aisle"
+    "collaboration",
+    "collaborate",
+    "compromise",
+    "consensus",
+    "conservative",
+    "cooperation",
+    "cooperate",
+    "democrat",
+    "family",
+    "gun",
+    "liberal",
+    "moderate",
+    "negotiation",
+    "negotiate",
+    "pass",
+    "repeal",
+    "republican",
+    "solidarity",
+    "today",
+    "tax",
+    "unite",
+    "unity"
   )) %>%
   dfm()
 
-dfm_target_words
-
-textstat_frequency(dfm_target_words)
+freq_target_words_bipartisan <- textstat_frequency(dfm_target_words_bipartisan)
 ```
+
+```{r}
+freq_target_words_bipartisan$normalized_frequency <- freq_target_words_bipartisan$frequency / nrow(bipartisan_collection)
+
+p_target_words_bipartisan_normalized <- ggplot(data=freq_target_words_bipartisan, aes(x=normalized_frequency, y=reorder(feature, normalized_frequency))) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="(word count) / (number of tweets), bipartisan collection") +
+  theme_minimal() +
+  theme(
+    # axis.text.x = element_text(angle = 45, size =10),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  xlim(0, 0.10)
+
+p_target_words_bipartisan_normalized
+```
+```{r}
+ggsave("plots/p_target_words_bipartisan_normalized.png", plot = p_target_words_bipartisan_normalized)
+```
+
+
 
 ```{r}
 dfm_target_words_partisan <- partisan_collection_corpus_a %>%
   tokens_select(c(
+    "abortion",
+    "agree",
+    "agreement",
+    "aisle",
     "bipartisan",
-    "compromise",
-    "unity",
-    "unite",
-    "family",
-    "solidarity",
+    "climate",
     "coalition",
-    "aisle"
+    "collaboration",
+    "collaborate",
+    "compromise",
+    "consensus",
+    "conservative",
+    "cooperation",
+    "cooperate",
+    "democrat",
+    "family",
+    "gun",
+    "liberal",
+    "moderate",
+    "negotiation",
+    "negotiate",
+    "pass",
+    "repeal",
+    "republican",
+    "solidarity",
+    "today",
+    "tax",
+    "unite",
+    "unity"
   )) %>%
   dfm()
 
-dfm_target_words_partisan
-
-textstat_frequency(dfm_target_words_partisan)
+freq_target_words_partisan <- textstat_frequency(dfm_target_words_partisan)
 ```
+
+```{r}
+freq_target_words_partisan$normalized_frequency <- freq_target_words_partisan$frequency / nrow(partisan_collection)
+
+p_target_words_partisan_normalized <- ggplot(data=freq_target_words_partisan, aes(x=normalized_frequency, y=reorder(feature, normalized_frequency))) +
+  geom_bar(stat="identity", fill="firebrick", width = 0.5)+
+  labs(x = "", y="", title="(word count) / (number of tweets), partisan collection") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  xlim(0, 0.10)
+
+p_target_words_partisan_normalized
+```
+
+```{r}
+ggsave("plots/p_target_words_partisan_normalized.png", plot = p_target_words_partisan_normalized)
+```
+
 
 ## Likelihood of certain words being in compromise bill Tweets
 
