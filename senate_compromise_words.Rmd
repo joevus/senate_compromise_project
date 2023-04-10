@@ -566,28 +566,112 @@ Data prep
 ## narrow dfm to several target features
 dfm_target_words_all <- all_tweets_corpus_a %>%
   tokens_select(c(
+    "abortion",
+    "act",
+    "agreement",
+    "aisle",
+    "american",
     "bipartisan",
-    "compromise",
-    "unity",
-    "unite",
-    "family",
-    "solidarity",
+    "climate",
     "coalition",
-    "aisle"
+    "collaboration",
+    "collaborate",
+    "compromise",
+    "consensus",
+    "conservative",
+    "cooperation",
+    "cooperate",
+    "democrat",
+    "family",
+    "gun",
+    "liberal",
+    "moderate",
+    "negotiation",
+    "negotiate",
+    "pass",
+    "repeal",
+    "republican",
+    "solidarity",
+    "today",
+    "tax",
+    "unite",
+    "unity"
   )) %>%
   dfm()
 
 ## convert to data frame
 target_words_all <- convert(dfm_target_words_all, "data.frame")
+```
 
+
+```{r}
+textstat_frequency(dfm_target_words_all)
+```
+
+```{r}
 ## add columns to Tweet collection based on dfm data
 all_tweets$word_count_bipartisan = NA
 all_tweets$word_present_bipartisan = NA
 
+all_tweets$word_count_american = NA
+all_tweets$word_count_act = NA
+all_tweets$word_count_family = NA
+all_tweets$word_count_today = NA
+all_tweets$word_count_pass = NA
+all_tweets$word_count_democrat = NA
+all_tweets$word_count_republican = NA
+all_tweets$word_count_climate = NA
+all_tweets$word_count_tax = NA
+all_tweets$word_count_gun = NA
+all_tweets$word_count_unite = NA
+all_tweets$word_count_abortion = NA
+all_tweets$word_count_agreement = NA
+all_tweets$word_count_conservative = NA
+all_tweets$word_count_negotiate = NA
+all_tweets$word_count_liberal = NA
+
 for(i in 1:nrow(all_tweets)) {
   tweet_id <- all_tweets[i, "id_str"]
-  bipartisan_count <- target_words_all[target_words_all$doc_id == tweet_id,]$bipartisan
+  
+  current_target_words <- target_words_all[target_words_all$doc_id == tweet_id, ]# current row of target words
+  
+  bipartisan_count <- current_target_words$bipartisan
+  american_count <- current_target_words$american
+  act_count <- current_target_words$act
+  family_count <- current_target_words$family
+  today_count <- current_target_words$today
+  pass_count <- current_target_words$pass
+  democrat_count <- current_target_words$democrat
+  republican_count <- current_target_words$republican
+  climate_count <- current_target_words$climate
+  tax_count <- current_target_words$tax
+  gun_count <- current_target_words$gun
+  unite_count <- current_target_words$unite
+  abortion_count <- current_target_words$abortion
+  agreement_count <- current_target_words$agreement
+  conservative_count <- current_target_words$conservative
+  negotiate_count <- current_target_words$negotiate
+  liberal_count <- current_target_words$liberal
+
+  
   all_tweets[i, "word_count_bipartisan"] <- bipartisan_count
+  all_tweets[i, "word_count_american"] <- american_count
+  all_tweets[i, "word_count_act"] <- act_count
+  all_tweets[i, "word_count_family"] <- family_count
+  all_tweets[i, "word_count_today"] <- today_count
+  all_tweets[i, "word_count_pass"] <- pass_count
+  all_tweets[i, "word_count_democrat"] <- democrat_count
+  all_tweets[i, "word_count_republican"] <- republican_count
+  all_tweets[i, "word_count_climate"] <- climate_count
+  all_tweets[i, "word_count_tax"] <- tax_count
+  all_tweets[i, "word_count_gun"] <- gun_count
+  all_tweets[i, "word_count_unite"] <- unite_count
+  all_tweets[i, "word_count_abortion"] <- abortion_count
+  all_tweets[i, "word_count_agreement"] <- agreement_count
+  all_tweets[i, "word_count_conservative"] <- conservative_count
+  all_tweets[i, "word_count_negotiate"] <- negotiate_count
+  all_tweets[i, "word_count_liberal"] <- liberal_count
+  
   
   word_present_bipartisan = 0
   if(bipartisan_count > 0) {
@@ -605,13 +689,6 @@ The column word_present_bipartisan is coded as a 1 if the word bipartisan is pre
 in the Tweet and 0 if it is not.
 
 Other words to consider:
-- moderate
-- thank
-- cooperation
-- collaboration
-- consensus
-- agreement
-- negotiation
 - mutual respect
 - common ground
 - bridge-building
@@ -633,9 +710,30 @@ summary(logit_bipartisan)
 exp(cbind(OR = coef(logit_bipartisan), confint(logit_bipartisan))) # see https://stats.oarc.ucla.edu/r/dae/logit-regression/
 ```
 
+```{r}
+logit_bipartisan <- glm(bipartisan_bill ~ word_count_bipartisan + word_count_american + word_count_family + word_count_today + word_count_pass + word_count_republican + word_count_democrat + word_count_act + word_count_unite + word_count_agreement + party + gender + age + Race, data=all_tweets, family="binomial")
+summary(logit_bipartisan)
+## odds ratios and 95% CI
+exp(cbind(OR = coef(logit_bipartisan), confint(logit_bipartisan))) # see https://stats.oarc.ucla.edu/r/dae/logit-regression/
+```
+
 
 ```{r}
 lm_bipartisan <- lm(bipartisan_votes ~ word_present_bipartisan + party + gender + age + Race, data=all_tweets)
+
+summary(lm_bipartisan)
+```
+
+```{r}
+lm_bipartisan <- lm(bipartisan_votes ~ word_count_bipartisan + word_count_american + word_count_act + word_count_family + word_count_today + word_count_pass + word_count_democrat + word_count_republican + word_count_climate + word_count_tax + word_count_gun + word_count_unite + word_count_agreement + word_count_conservative + word_count_negotiate + word_count_liberal + party + gender + age + Race, data=all_tweets)
+
+summary(lm_bipartisan)
+```
+
+```{r}
+# linear model with Race releveled (using all_tweets_2)
+
+lm_bipartisan <- lm(bipartisan_votes ~ word_count_bipartisan + word_count_american + word_count_act + word_count_family + word_count_today + word_count_pass + word_count_democrat + word_count_republican + word_count_climate + word_count_tax + word_count_gun + word_count_unite + word_count_agreement + word_count_conservative + word_count_negotiate + word_count_liberal + party + gender + age + Race, data=all_tweets_2)
 
 summary(lm_bipartisan)
 ```
