@@ -891,7 +891,7 @@ ggplot(all_tweets, aes(word_count_american, bipartisan_votes)) +
   # geom_smooth(method='lm', formula= y~x)
   geom_line(aes(y=pred))
 ```
-```
+
 
 
 ## The models
@@ -958,6 +958,14 @@ textplot_wordcloud(
 ```
 
 ### Figure showing top word for each day
+
+### Original vs processed Tweet
+
+```{r}
+text(corpus, subset = "1593990831555297280")
+```
+
+
 
 
 # Sentiment
