@@ -459,6 +459,7 @@ p_top_words_partisan_df <- ggplot(data=top_words_partisan_df, aes(x=reorder(word
 
 p_top_words_partisan_df
 ```
+
 ```{r}
 ggsave("plots/p_top_words_partisan_df.png", plot = p_top_words_partisan_df)
 ```
@@ -478,6 +479,7 @@ p_top_words_partisan_normalized <- ggplot(data=top_words_partisan_df, aes(x=reor
 
 p_top_words_partisan_normalized
 ```
+
 ```{r}
 ggsave("plots/p_top_words_partisan_normalized.png", plot = p_top_words_partisan_normalized)
 ```
@@ -564,6 +566,7 @@ p_target_words_bipartisan_normalized <- ggplot(data=freq_target_words_bipartisan
 
 p_target_words_bipartisan_normalized
 ```
+
 ```{r}
 ggsave("plots/p_target_words_bipartisan_normalized.png", plot = p_target_words_bipartisan_normalized)
 ```
@@ -628,7 +631,8 @@ ggsave("plots/p_target_words_partisan_normalized.png", plot = p_target_words_par
 ```
 
 
-## Likelihood of certain words being in compromise bill Tweets
+# Statstical model 
+## likelihood of certain words being in compromise bill Tweets
 
 This should be useful:https://quanteda.io/articles/quickstart.html#grouping-words-by-dictionary-or-equivalence-class
 
@@ -782,6 +786,116 @@ all_tweets$word_present_bipartisan <- as.factor(all_tweets$word_present_bipartis
 ```
 
 
+## Exploratory analysis
+
+```{r}
+p_all_tweets_race <- ggplot(data = all_tweets) +
+  geom_bar(mapping = aes(x = Race))
+```
+
+```{r}
+ggsave("plots/p_all_tweets_race.png", plot = p_all_tweets_race)
+```
+
+Similar distribution of Senators vs Tweet count by race
+```{r}
+p_senator_variables_race <- ggplot(data = senator_variables) +
+  geom_bar(mapping = aes(x = Race))
+```
+
+```{r}
+ggsave("plots/p_senator_variables_race.png", plot = p_senator_variables_race)
+```
+
+```{r}
+p_all_tweets_age <- ggplot(data = all_tweets) +
+  geom_histogram(mapping = aes(x = age))
+
+ggsave("plots/p_all_tweets_age.png", plot = p_all_tweets_age)
+```
+
+```{r}
+p_all_tweets_gender <- ggplot(data = all_tweets) +
+  geom_bar(mapping = aes(x = gender))
+
+ggsave("plots/p_all_tweets_gender.png", plot = p_all_tweets_gender)
+```
+
+```{r}
+p_all_tweets_bipartisan <- ggplot(data = all_tweets) +
+  geom_bar(mapping = aes(x = bipartisan_bill)) +
+  labs(x='') +
+  scale_x_discrete(labels = c("0" = "Partisan bill", "1" = "Bipartisan bill"))
+
+ggsave("plots/p_all_tweets_bipartisan.png", plot = p_all_tweets_bipartisan)
+```
+
+```{r}
+p_all_tweets_bipartisan_votes <- ggplot(data = all_tweets) +
+  geom_histogram(mapping = aes(x = bipartisan_votes), binwidth = 0.5)
+
+ggsave("plots/p_all_tweets_bipartisan_votes.png", p_all_tweets_bipartisan_votes)
+```
+
+```{r}
+# p_all_tweets_bipartisan_votes_gender <- ggplot(data = all_tweets) +
+#   geom_count(mapping = aes(x = bipartisan_votes, y = gender))
+
+p_all_tweets_bipartisan_votes_gender <- ggplot(data = all_tweets, mapping = aes(x = bipartisan_votes)) +
+  geom_freqpoly(mapping = aes(colour = gender), binwidth = 1)
+
+# p_all_tweets_bipartisan_votes_gender <- ggplot(data = all_tweets, aes(x = gender, y = bipartisan_votes)) +
+#   geom_point() +
+#   geom_jitter()
+
+p_all_tweets_bipartisan_votes_gender
+
+ggsave("plots/p_all_tweets_bipartisan_votes_gender.png", p_all_tweets_bipartisan_votes_gender)
+```
+
+```{r}
+# p_all_tweets_bipartisan_votes_race <- ggplot(data = all_tweets, mapping = aes(x = bipartisan_votes)) +
+#   geom_freqpoly(mapping = aes(colour = Race), binwidth = 1)
+
+p_all_tweets_bipartisan_votes_race <- ggplot(data = all_tweets, aes(x = Race, y = bipartisan_votes)) +
+  geom_count()
+
+p_all_tweets_bipartisan_votes_race
+
+ggsave("plots/p_all_tweets_bipartisan_votes_race.png", p_all_tweets_bipartisan_votes_race)
+```
+
+```{r}
+# p_all_tweets_bipartisan_votes_age <- ggplot(data = all_tweets, aes(x = age, y = bipartisan_votes)) +
+#   geom_point() +
+#   geom_jitter(width = 0.5, height = 0.5)
+
+p_all_tweets_bipartisan_votes_age <- ggplot(data = all_tweets, mapping = aes(x = as.factor(bipartisan_votes), y = age)) +
+  geom_boxplot()
+
+p_all_tweets_bipartisan_votes_age
+
+ggsave("plots/p_all_tweets_bipartisan_votes_age.png", p_all_tweets_bipartisan_votes_age)
+```
+
+```{r}
+ggplot(all_tweets, aes(bipartisan_votes, word_count_bipartisan)) + 
+  geom_point() +
+  geom_smooth(method='lm', formula= y~x)
+```
+
+```{r}
+
+ggplot(all_tweets, aes(word_count_american, bipartisan_votes)) + 
+  geom_point() +
+  # geom_smooth(method='lm', formula= y~x)
+  geom_line(aes(y=pred))
+```
+```
+
+
+## The models
+
 ```{r}
 logit_bipartisan <- glm(bipartisan_bill ~ word_present_bipartisan + party + gender + age + Race, data=all_tweets, family="binomial")
 summary(logit_bipartisan)
@@ -808,6 +922,8 @@ lm_bipartisan <- lm(bipartisan_votes ~ word_count_bipartisan + word_count_americ
 
 summary(lm_bipartisan)
 ```
+
+
 
 ```{r}
 # linear model with Race releveled (using all_tweets_2)
