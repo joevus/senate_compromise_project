@@ -962,7 +962,11 @@ textplot_wordcloud(
 ### Original vs processed Tweet
 
 ```{r}
-text(corpus, subset = "1593990831555297280")
+sample_tweet_df <- convert(dfm_subset(dtm_all_tweets_a, id == "1593321609699500032"), "data.frame")
+sample_tweet_df <- sample_tweet_df[,sample_tweet_df[1,] != 0] # remove doc id
+sample_tweet_words <- colnames(sample_tweet_df)
+sample_tweet_words <- sample_tweet_words[-1] # remove "doc_id"
+paste(sample_tweet_words, collapse = " ")
 ```
 
 
